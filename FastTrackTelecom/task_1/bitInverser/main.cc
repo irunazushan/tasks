@@ -1,60 +1,4 @@
-#include <bitset>
-#include <iostream>
-
-bool isIndexInBounds(size_t startPtrIndex, size_t lengthForInvertion,
-                     size_t lengthData) {
-  return (startPtrIndex + lengthForInvertion <= lengthData);
-}
-
-template <class T>
-void invertUnit(T* startBit, size_t lengthInUnits, size_t startPtrIndex,
-                size_t lengthOfArray) {
-  if (!isIndexInBounds(startPtrIndex, lengthInUnits, lengthOfArray)) {
-    std::cerr << "Error: invertion is out of range" << std::endl;
-    return;
-  }
-  T mask = ~0;
-  for (size_t i = 0; i < lengthInUnits; i++) {
-    startBit[i] ^= mask;
-  }
-}
-
-template <class T>
-void invertBytes(T* startBit, size_t lengthInBytes, size_t startPtrIndex,
-                 size_t lengthOfArray) {
-  if (lengthInBytes != 0 &&
-      !isIndexInBounds(startPtrIndex,
-                       std::max((lengthInBytes / sizeof(T)), (size_t)1),
-                       lengthOfArray)) {
-    std::cerr << "Error: invertion is out of range" << std::endl;
-    return;
-  }
-  T mask = (uint8_t)~0;
-  size_t iterationPerUnit = sizeof(startBit[0]);
-  size_t i = 0;
-  size_t j = 1;
-  while (lengthInBytes) {
-    startBit[i] ^= mask;
-    --lengthInBytes;
-    if (lengthInBytes && j < iterationPerUnit) {
-      mask <<= 8;
-      j++;
-    } else {
-      mask = (uint8_t)~0;
-      j = 1;
-      i++;
-    }
-  }
-}
-
-template <class T>
-void showBits(const T* data, size_t size) {
-  size_t amountOfUnits = size / sizeof(data[0]);
-  for (int i = amountOfUnits - 1; i >= 0; i--) {
-    std::cout << std::bitset<(sizeof(T) * 8)>(static_cast<T>(data[i])) << ' ';
-  }
-  std::cout << '\n';
-}
+#include "invertor.h"
 
 int main() {
   std::cout << "\nTest 0:" << std::endl;
@@ -151,6 +95,81 @@ int main() {
     size_t startPtrIndex = 9;
     invertBytes((data + startPtrIndex), lengthInBytes, startPtrIndex,
                 sizeof(data) / sizeof(data[0]));
+    showBits(data, sizeof(data));
+  }
+
+  std::cout << "\nTest 8: Вставка битов" << std::endl;
+  {
+    uint64_t data[] = {15, 15};
+    size_t bitIndexes[] = {3, 4, 9, 100, 101, 102, 103};
+    std::cout << "Биты до инвертирования:" << '\n';
+    showBits(data, sizeof(data));
+    size_t lengthInBytes = 15;
+    size_t startPtrIndex = 0;
+    invertBits((data + startPtrIndex),
+               sizeof(bitIndexes) / sizeof(bitIndexes[0]), bitIndexes,
+               lengthInBytes, startPtrIndex, sizeof(data) / sizeof(data[0]));
+    std::cout << "Биты после инвертирования:" << '\n';
+    showBits(data, sizeof(data));
+  }
+
+  std::cout << "\nTest 9: Вставка битов" << std::endl;
+  {
+    char data[5] = {'F', 'T', 'T'};
+    size_t bitIndexes[] = {0, 1, 2, 5, 6, 9, 20, 21, 22, 24, 25};
+    std::cout << "Биты до инвертирования:" << '\n';
+    showBits(data, sizeof(data));
+    size_t lengthInBytes = 4;
+    size_t startPtrIndex = 1;
+    invertBits((data + startPtrIndex),
+               sizeof(bitIndexes) / sizeof(bitIndexes[0]), bitIndexes,
+               lengthInBytes, startPtrIndex, sizeof(data) / sizeof(data[0]));
+    std::cout << "Биты после инвертирования:" << '\n';
+    showBits(data, sizeof(data));
+  }
+
+  std::cout << "\nTest 10: Вставка битов" << std::endl;
+  {
+    uint64_t data[3] = {0};
+    size_t bitIndexes[] = {5, 6, 7, 8, 9, 10, 50, 51, 52, 100, 101};
+    std::cout << "Биты до инвертирования:" << '\n';
+    showBits(data, sizeof(data));
+    size_t lengthInBytes = 15;
+    size_t startPtrIndex = 1;
+    invertBits((data + startPtrIndex),
+               sizeof(bitIndexes) / sizeof(bitIndexes[0]), bitIndexes,
+               lengthInBytes, startPtrIndex, sizeof(data) / sizeof(data[0]));
+    std::cout << "Биты после инвертирования:" << '\n';
+    showBits(data, sizeof(data));
+  }
+
+  std::cout << "\nTest 11: Вставка битов" << std::endl;
+  {
+    uint8_t data[10] = {0};
+    size_t bitIndexes[] = {0, 1, 5, 6, 7, 23, 24, 25, 35, 36, 37, 38};
+    std::cout << "Биты до инвертирования:" << '\n';
+    showBits(data, sizeof(data));
+    size_t lengthInBytes = 6;
+    size_t startPtrIndex = 4;
+    invertBits((data + startPtrIndex),
+               sizeof(bitIndexes) / sizeof(bitIndexes[0]), bitIndexes,
+               lengthInBytes, startPtrIndex, sizeof(data) / sizeof(data[0]));
+    std::cout << "Биты после инвертирования:" << '\n';
+    showBits(data, sizeof(data));
+  }
+
+  std::cout << "\nTest 12: Вставка битов за выделенной памятью" << std::endl;
+  {
+    uint8_t data[10] = {0};
+    size_t bitIndexes[] = {2, 4, 21};
+    std::cout << "Биты до инвертирования:" << '\n';
+    showBits(data, sizeof(data));
+    size_t lengthInBytes = 2;
+    size_t startPtrIndex = 8;
+    invertBits((data + startPtrIndex),
+               sizeof(bitIndexes) / sizeof(bitIndexes[0]), bitIndexes,
+               lengthInBytes, startPtrIndex, sizeof(data) / sizeof(data[0]));
+    std::cout << "Биты после инвертирования:" << '\n';
     showBits(data, sizeof(data));
   }
   return 0;

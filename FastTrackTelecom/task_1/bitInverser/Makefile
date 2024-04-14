@@ -14,7 +14,7 @@ valg:
 	valgrind --tool=memcheck --leak-check=yes ./main
 
 clang:
-	clang-format -style=Google -i *.cc
+	clang-format -style=Google -i *.cc *.h
 
 clean:
 	rm -rf *.o main clean
