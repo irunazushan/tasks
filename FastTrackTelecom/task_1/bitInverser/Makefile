@@ -4,7 +4,7 @@ LIBS = -lstdc++ -lpthread -lm
 
 .PHONY: all main
 
-all: clean test
+all: clean main
 
 main:
 	$(CXX) $(CXXFLAGS) main.cc -o main $(LIBS)
