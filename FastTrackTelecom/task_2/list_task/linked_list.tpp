@@ -61,6 +61,16 @@ typename LinkedList<T>::iterator LinkedList<T>::insert_after(iterator pos,
 }
 
 template <typename T>
+template <typename U>
+T& LinkedList<T>::LinkedListIterator<U>::operator*() {
+  if (cur_ == nullptr) {
+    static T nothing{};
+    return nothing;
+  } 
+  return cur_->value_;
+}
+
+template <typename T>
 const T& LinkedList<T>::front() const {
   return head_->next->value_;
 }
@@ -101,6 +111,9 @@ typename LinkedList<T>::iterator LinkedList<T>::find(const T& value) {
   iterator cur = this->begin();
   while (cur != this->end() && *cur != value) {
     ++cur;
+  }
+  if (cur == this->end()) {
+    cur = this->begin();
   }
   return iterator(cur);
 }

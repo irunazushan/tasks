@@ -69,5 +69,32 @@ int main() {
     }
     std::cout << std::endl;
   }
+
+  {
+    std::cout << "\nTEST 4" << std::endl;
+    LinkedList<int> ls{3, 4, 5, 6, 7};
+    for (auto it = ls.begin(); it != ls.end(); ++it) {
+      std::cout << *it << " ";
+    }
+    std::cout << std::endl;
+    std::cout << "size before deleting: " << ls.size() << std::endl;
+    ls.erase(56);
+    ls.erase(-56);
+    ls.erase(10);
+    std::cout << "size after deleting: " << ls.size() << std::endl;
+  }
+
+  {
+    std::cout << "\nTEST 5" << std::endl;
+    LinkedList<const int> ls{3, 4, 5, 6, 7};
+    for (auto it = ls.begin(); it != ls.end(); ++it) {
+      std::cout << *it << " ";
+    }
+    std::cout << std::endl;
+    auto it = ls.find(100500);
+    std::cout << "Ожидается первый элемент списка: " << *it << std::endl;
+    it = ls.end();
+    std::cout << "Ожидается T{}: " << *it << std::endl;
+  }
   return 0;
 }

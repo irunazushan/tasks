@@ -12,18 +12,17 @@ class LinkedList {
 
   Node* head_;
   Node* tail_;
-  // Node* root;
   size_t m_size;
 
  public:
-  template <typename D>
+ template <typename U>
   class LinkedListIterator {
    public:
-    using iterator = LinkedListIterator<D>;
+    using iterator = LinkedListIterator<U>;
     Node* cur_;
     LinkedListIterator() : cur_(nullptr) {}
     LinkedListIterator(Node* cur) : cur_(cur) {}
-    T& operator*() { return cur_->value_; }
+    T& operator*();
     iterator& operator++() {
       cur_ = cur_->next;
       return *this;
@@ -33,11 +32,11 @@ class LinkedList {
     bool operator==(const iterator& other) const { return cur_ == other.cur_; }
   };
 
-  template <typename D>
-  class LinkedListConstIterator : public LinkedListIterator<D> {
+template <typename U>
+  class LinkedListConstIterator : public LinkedListIterator<U> {
    public:
-    LinkedListConstIterator() : LinkedListIterator<D>() {}
-    LinkedListConstIterator(Node* cur_) : LinkedListIterator<D>(cur_) {}
+    LinkedListConstIterator() : LinkedListIterator<U>() {}
+    LinkedListConstIterator(Node* cur_) : LinkedListIterator<U>(cur_) {}
     const T& operator*() const { return this->cur_->value_; }
   };
 
