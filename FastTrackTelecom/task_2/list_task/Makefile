@@ -10,15 +10,11 @@ main:
 	$(CXX) $(CXXFLAGS) main.cc -o main $(LIBS)
 	./main
 
-deb:
-	$(CXX) $(CXXFLAGS) main.cc $(LIBS)
-	./a.out
-
 valg:
 	valgrind --tool=memcheck --leak-check=yes ./main
 
 clang:
-	clang-format -style=Google -i *.cc *.h
+	clang-format -style=Google -i *.cc *.h *.tpp
 
 clean:
 	rm -rf *.o main a.out clean
